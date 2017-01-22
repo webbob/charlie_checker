@@ -27,3 +27,37 @@ and actual vehicle performance.
 * Size of graph database
 * Geofencing to locate nearby stop nodes, use MBTA function or build a temporary MongoDB?
 
+# Implementation Parts
+
+## Collect Schedule Feed
+
+The MBTA schedule is published as a GTFS feed. The feed data comes in the form of a zipfile which needs to be
+transferred, unpacked, cleaned, and verified. The "gtfstk" Python module, currently at version 6.0.0 does
+this and produces a Feed object which comprises all the data from the feed's zipfile organized into
+DataFrames. DataFrames are structures defined in and manipulated by the Pandas Python module. The Pandas
+module includes useful aggregation and statistical code, and the related GeoPandas provides geolocation
+functionality that we will want, so we'll use:
+
+* Google's transitfeed code for validation of static schedule https://github.com/google/transitfeed
+* Google's protocol-buffers code for realtime feed (via Pypi as "protobuf")
+* Google's language bindings for the GTFS-realtime feed in Protocol Buffers https://github.com/google/gtfs-realtime-bindings
+* gtfstk for parsing static and realtime feeds https://github.com/araichev/gtfstk
+* pandas
+* geopandas
+
+gtfstk also pulls in a lot of dependencies which might be required for Jupyter integration that we won't use, we'll
+need to sort through that further.
+
+On startup, our code should check if we have a schedule loaded and if not, go get one.
+
+Probably save the cleaned version for reload if there is no new schedule when we start up.
+
+## Graph Database Load
+
+* traverse DataFrames in Feed object
+* establish edges for vehicles
+* establish which stops are near other stop for transfers with a short walk
+
+## Collect Realtime Metrics
+
+
