@@ -1,4 +1,5 @@
 .secret
+tmp
 bin/activate
 bin/activate.csh
 bin/activate.fish
